@@ -1,19 +1,16 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Untitled Document</title>
-</head>
-<body>
-
-    
 <?php 
-    require_once './request.php';
-    require_once './constante.php';
-    require_once './user.php';
+// Chargement des librairies
+require_once './default_lib/InitLib.php';
+require_once './default_lib/InitPic.php';
+require_once './request.php';
+require_once './constante.php';
+require_once './user.php';
   
 /* Connexion à une base ODBC avec l'invocation de pilote */
     $dsn = 'mysql:dbname='.dbnom.';host=127.0.0.1';
+
+InitLib::setHeaderHtml('');
+InitLib::setOpenBodyHtml("srd");
 
     try {
         $dbh = new PDO($dsn, dblogin, dbpwd);
@@ -25,21 +22,21 @@
 
     $entry1 = Request::getPostParameters('login');
     $stmt = $dbh->prepare("SELECT * FROM user where login = '$entry1' AND password = '".Request::getPostParameters('password')."'");
-//var_dump($stmt);
+	// var_dump($stmt);
 	if ($stmt->execute(array($entry1))) {
 		$row = $stmt->fetch();
 		if (!$row) {
-			echo "Access Denied";
+			echo '<div class="alert alert-warning text-center"><strong>Access Denied</strong></div>';
 			$dbh = null;
 			exit();
 		}
-		echo "Access Granted";
-		sleep (2);
-		header ('Location: Browse_ToolTip.php',true);
 	}
+		echo '<div class="alert alert-success text-center"><strong>Access Granted</strong></div>';
+		sleep (20);
+		header ('Location: Browse_ToolTip2.php',true);
     
 // et maintenant, fermeture de la connection!
-	$dbh = null;
+$dbh = null;
+	
+InitLib::setCloseBodyHtml();
 ?>
-</body>
-</html>
